@@ -2,7 +2,9 @@ package ru.hogwarts.school.service.impl;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.dao.FacultyRepository;
+import ru.hogwarts.school.exception.AlreadyExistException;
 import ru.hogwarts.school.exception.BedParamException;
+import ru.hogwarts.school.exception.NotFoundException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.service.FacultyService;
 
@@ -19,6 +21,9 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty addFaculty(Faculty faculty) {
+        if (facultyRepository.existsFacultyByNameAndColor(faculty)){
+            throw new AlreadyExistException("This faculty " + faculty.getName() + " already exist in DB");
+        }
         facultyRepository.save(faculty);
         return faculty;
     }
@@ -36,7 +41,10 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public void deleteFaculty(Long id) {
-        facultyRepository.deleteById(id);
+        long numOfFacultyDeleted = facultyRepository.deleteFacultyById(id);
+        if (numOfFacultyDeleted != 1){
+            throw new NotFoundException("No such id " + id + " found in the DB");
+        }
     }
 
     @Override
