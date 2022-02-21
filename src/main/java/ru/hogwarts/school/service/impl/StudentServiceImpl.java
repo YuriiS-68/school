@@ -3,6 +3,7 @@ package ru.hogwarts.school.service.impl;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.dao.StudentRepository;
 import ru.hogwarts.school.exception.BedParamException;
+import ru.hogwarts.school.exception.NotFoundException;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
@@ -39,7 +40,10 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void deleteStudent(Long id) {
-        studentRepository.deleteById(id);
+        long numOfStudentDeleted = studentRepository.deleteStudentById(id);
+        if (numOfStudentDeleted != 1){
+            throw new NotFoundException("No such id " + id + " found in the DB");
+        }
     }
 
     @Override
