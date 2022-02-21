@@ -1,55 +1,50 @@
 package ru.hogwarts.school.service.impl;
 
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.dao.StudentRepository;
 import ru.hogwarts.school.exception.BedParamException;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
-    private final HashMap<Long, Student> students;
-    private long lastId = 0;
+    private final StudentRepository studentRepository;
 
-    public StudentServiceImpl() {
-        this.students = new HashMap<>();
+    public StudentServiceImpl(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
     }
 
     @Override
     public Student addStudent(Student student) {
-        student.setId(++lastId);
         if (!checkValidName(student)){
             throw new BedParamException("Not valid name");
         }
-        students.put(lastId, student);
+        studentRepository.save(student);
         return student;
     }
 
     @Override
     public Student findStudent(Long id) {
-        return students.get(id);
+        return studentRepository.findById(id).get();
     }
 
     @Override
     public Student updateStudent(Student student) {
-        students.put(student.getId(), student);
+        studentRepository.save(student);
         return student;
     }
 
     @Override
     public void deleteStudent(Long id) {
-        if (!students.containsKey(id)){
-            throw new BedParamException("Nothing found for this " + id);
-        }
-        students.remove(id);
+        studentRepository.deleteById(id);
     }
 
     @Override
     public Collection<Student> getAllStudents() {
-        return students.values();
+        return studentRepository.findAll();
     }
 
     private boolean checkValidName(Student student){
@@ -66,7 +61,7 @@ public class StudentServiceImpl implements StudentService {
         if (age == null){
             throw new BedParamException();
         }
-        return students.values().stream()
+        return getAllStudents().stream()
                 .filter(student -> student.getAge() == age)
                 .collect(Collectors.toList());
     }
