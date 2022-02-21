@@ -1,6 +1,7 @@
 package ru.hogwarts.school.service.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.hogwarts.school.dao.StudentRepository;
 import ru.hogwarts.school.exception.BedParamException;
 import ru.hogwarts.school.exception.NotFoundException;
@@ -11,6 +12,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
 
@@ -68,5 +70,9 @@ public class StudentServiceImpl implements StudentService {
         return getAllStudents().stream()
                 .filter(student -> student.getAge() == age)
                 .collect(Collectors.toList());
+    }
+
+    public Collection<Student> getStudentsByAgeBetween(Integer min, Integer max){
+        return studentRepository.findStudentsByAgeBetween(min, max);
     }
 }

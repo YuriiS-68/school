@@ -1,6 +1,7 @@
 package ru.hogwarts.school.service.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.hogwarts.school.dao.FacultyRepository;
 import ru.hogwarts.school.exception.AlreadyExistException;
 import ru.hogwarts.school.exception.BedParamException;
@@ -12,6 +13,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class FacultyServiceImpl implements FacultyService {
     private final FacultyRepository facultyRepository;
 
@@ -21,7 +23,7 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty addFaculty(Faculty faculty) {
-        if (facultyRepository.existsFacultyByNameAndColor(faculty)){
+        if (facultyRepository.existsFacultyByNameAndColor(faculty.getName(), faculty.getColor())){
             throw new AlreadyExistException("This faculty " + faculty.getName() + " already exist in DB");
         }
         facultyRepository.save(faculty);
@@ -59,5 +61,9 @@ public class FacultyServiceImpl implements FacultyService {
         return getAllFaculties().stream()
                 .filter(faculty -> faculty.getColor().equals(color))
                 .collect(Collectors.toList());
+    }
+
+    public Collection<Faculty> findFacultyByNameOrColor(String input, String color) {
+        return facultyRepository.findFacultyByNameOrColorIgnoreCase(input, color);
     }
 }
