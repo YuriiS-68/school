@@ -48,12 +48,18 @@ public class FacultyController {
     }
 
     @GetMapping(value = "/color", params = {"color"})
-    public Collection<Faculty> getStudentsByAge(@RequestParam(value = "color", required = false) String color){
+    public Collection<Faculty> getFacultiesByColor(@RequestParam(value = "color", required = false) String color){
         return facultyService.getFacultiesByColor(color);
     }
 
     @GetMapping("/get")
     public Collection<Faculty> getAll(){
         return facultyService.getAllFaculties();
+    }
+
+    @GetMapping(value = "/find")
+    public ResponseEntity<Collection<Faculty>> getFacultyByNameOrColor(@RequestParam (required = false) String input,
+                                                                       @RequestParam (required = false) String color){
+        return ResponseEntity.ok(facultyService.findFacultyByNameOrColor(input, color));
     }
 }
