@@ -32,7 +32,7 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty findFaculty(Long id) {
-        return facultyRepository.findById(id).get();
+        return facultyRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -58,12 +58,13 @@ public class FacultyServiceImpl implements FacultyService {
         if (color == null){
             throw new BedParamException();
         }
-        return getAllFaculties().stream()
+        return facultyRepository.findFacultyByColor(color);
+        /*return getAllFaculties().stream()
                 .filter(faculty -> faculty.getColor().equals(color))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
     }
 
-    public Collection<Faculty> findFacultyByNameOrColor(String input, String color) {
-        return facultyRepository.findFacultyByNameOrColorIgnoreCase(input, color);
+    public Collection<Faculty> findFacultyByNameOrColor(String name, String color) {
+        return facultyRepository.findFacultyByNameOrColorIgnoreCase(name, color);
     }
 }

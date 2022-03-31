@@ -25,6 +25,11 @@ public class Student {
         this.age = age;
     }
 
+    public Student(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
     public Student(Long id, String name, int age, Faculty faculty) {
         this.id = id;
         this.name = name;
@@ -71,7 +76,7 @@ public class Student {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return getAge() == student.getAge() && getId().equals(student.getId()) && getName().equals(student.getName());
+        return getAge() == student.getAge() && Objects.equals(id, student.id) && getName().equals(student.getName());
     }
 
     @Override

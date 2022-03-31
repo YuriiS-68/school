@@ -34,7 +34,7 @@ public class FacultyController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Faculty> updateStudent(@RequestBody Faculty faculty){
+    public ResponseEntity<Faculty> updateFaculty(@RequestBody Faculty faculty){
         Faculty foundFaculty = facultyService.updateFaculty(faculty);
         if (faculty == null){
             return ResponseEntity.notFound().build();
@@ -58,8 +58,8 @@ public class FacultyController {
     }
 
     @GetMapping(value = "/find")
-    public ResponseEntity<Collection<Faculty>> getFacultyByNameOrColor(@RequestParam (required = false) String input,
+    public ResponseEntity<Collection<Faculty>> getFacultyByNameOrColor(@RequestParam (required = false) String name,
                                                                        @RequestParam (required = false) String color){
-        return ResponseEntity.ok(facultyService.findFacultyByNameOrColor(input, color));
+        return ResponseEntity.ok(facultyService.findFacultyByNameOrColor(name, color));
     }
 }
