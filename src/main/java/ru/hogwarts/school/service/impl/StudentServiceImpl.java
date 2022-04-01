@@ -84,7 +84,7 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.getAgeAverage();
     }
 
-    public Collection<Student> getLastAddedStudent(){
-        return studentRepository.getFiveLastStudents();
+    public Collection<Student> getLastAddedStudent(int count){
+        return studentRepository.getFiveLastStudents(count);
     }
 }

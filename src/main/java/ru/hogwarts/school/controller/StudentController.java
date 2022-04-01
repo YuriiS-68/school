@@ -74,12 +74,8 @@ public class StudentController {
         return studentService.getAgeAverage();
     }
 
-    @GetMapping("/last-students")
-    public ResponseEntity<Collection<Student>> getLastAddedStudents(){
-        Collection<Student> students = studentService.getLastAddedStudent();
-        if (students.size() == 0){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.ok(students);
+    @GetMapping("/last/{count}")
+    public Collection<Student> getLastAddedStudents(@PathVariable int count){
+        return studentService.getLastAddedStudent(count);
     }
 }
