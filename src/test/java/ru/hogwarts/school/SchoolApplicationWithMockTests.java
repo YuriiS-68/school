@@ -38,7 +38,7 @@ public class SchoolApplicationWithMockTests {
     private ObjectMapper objectMapper;
 
     @Test
-    public void getFacultyTest() throws Exception {
+    public void getFacultyInfoTest() throws Exception {
         Long id = 1L;
         String name = "Gryffindor";
         String color = "red";

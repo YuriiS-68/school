@@ -10,6 +10,7 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +33,7 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty findFaculty(Long id) {
-        return facultyRepository.findById(id).orElse(null);
+        return facultyRepository.findById(id).get();
     }
 
     @Override
@@ -59,9 +60,6 @@ public class FacultyServiceImpl implements FacultyService {
             throw new BedParamException();
         }
         return facultyRepository.findFacultyByColor(color);
-        /*return getAllFaculties().stream()
-                .filter(faculty -> faculty.getColor().equals(color))
-                .collect(Collectors.toList());*/
     }
 
     public Collection<Faculty> findFacultyByNameOrColor(String name, String color) {
