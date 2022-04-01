@@ -10,5 +10,6 @@ import java.util.Optional;
 @Repository
 @SessionScope
 public interface AvatarRepository extends PagingAndSortingRepository<Avatar, Long> {
+
     Optional<Avatar> findByStudentId(Long studentId);
 }

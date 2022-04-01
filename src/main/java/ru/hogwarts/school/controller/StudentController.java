@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Student;
@@ -61,5 +62,24 @@ public class StudentController {
     @GetMapping("/ages")
     public ResponseEntity<Collection<Student>> getStudentsByAgeBetween(@RequestParam Integer min, @RequestParam Integer max){
         return ResponseEntity.ok(studentService.getStudentsByAgeBetween(min, max));
+    }
+
+    @GetMapping("/quantity-students")
+    public Integer getQuantityStudentsSchool(){
+        return studentService.getQuantityStudents();
+    }
+
+    @GetMapping("/avg")
+    public Integer getAgeStudentsAverage(){
+        return studentService.getAgeAverage();
+    }
+
+    @GetMapping("/last-students")
+    public ResponseEntity<Collection<Student>> getLastAddedStudents(){
+        Collection<Student> students = studentService.getLastAddedStudent();
+        if (students.size() == 0){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(students);
     }
 }
