@@ -7,6 +7,7 @@ import ru.hogwarts.school.service.impl.FacultyServiceImpl;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("faculty")
@@ -19,9 +20,9 @@ public class FacultyController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Faculty> getFacultyInfo(@PathVariable Long id){
-        Faculty faculty = facultyService.findFaculty(id);
-        if (faculty == null){
+    public ResponseEntity<Optional<Faculty>> getFacultyInfo(@PathVariable Long id){
+        Optional<Faculty> faculty = Optional.ofNullable(facultyService.findFaculty(id));
+        if (faculty.isEmpty()){
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(faculty);
@@ -34,9 +35,9 @@ public class FacultyController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Faculty> updateStudent(@RequestBody Faculty faculty){
-        Faculty foundFaculty = facultyService.updateFaculty(faculty);
-        if (faculty == null){
+    public ResponseEntity<Optional<Faculty>> updateFaculty(@RequestBody Faculty faculty){
+        Optional<Faculty> foundFaculty = Optional.ofNullable(facultyService.updateFaculty(faculty));
+        if (foundFaculty.isEmpty()){
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(foundFaculty);
@@ -58,8 +59,8 @@ public class FacultyController {
     }
 
     @GetMapping(value = "/find")
-    public ResponseEntity<Collection<Faculty>> getFacultyByNameOrColor(@RequestParam (required = false) String input,
+    public ResponseEntity<Collection<Faculty>> getFacultyByNameOrColor(@RequestParam (required = false) String name,
                                                                        @RequestParam (required = false) String color){
-        return ResponseEntity.ok(facultyService.findFacultyByNameOrColor(input, color));
+        return ResponseEntity.ok(facultyService.findFacultyByNameOrColor(name, color));
     }
 }
