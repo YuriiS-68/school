@@ -62,4 +62,19 @@ public class StudentController {
     public ResponseEntity<Collection<Student>> getStudentsByAgeBetween(@RequestParam Integer min, @RequestParam Integer max){
         return ResponseEntity.ok(studentService.getStudentsByAgeBetween(min, max));
     }
+
+    @GetMapping("/quantity-students")
+    public Integer getQuantityStudentsSchool(){
+        return studentService.getQuantityStudents();
+    }
+
+    @GetMapping("/avg")
+    public Integer getAgeStudentsAverage(){
+        return studentService.getAgeAverage();
+    }
+
+    @GetMapping("/last/{count}")
+    public Collection<Student> getLastAddedStudents(@PathVariable int count){
+        return studentService.getLastAddedStudent(count);
+    }
 }
