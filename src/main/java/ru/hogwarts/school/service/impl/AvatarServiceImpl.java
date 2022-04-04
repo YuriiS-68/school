@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,8 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Transactional
 public class AvatarServiceImpl implements AvatarService {
 
+    private static final Logger log = LoggerFactory.getLogger(AvatarServiceImpl.class);
+
     @Value("${student.avatars.dir.path}")
     private String avatarsDir;
 
@@ -37,7 +41,14 @@ public class AvatarServiceImpl implements AvatarService {
     }
 
     public void uploadAvatar(Long studentId, MultipartFile file) throws IOException {
+        log.info("Was invoked method to upload avatar for student: {}", studentId);
+
         Student student = studentService.findStudent(studentId);
+        if (student == null){
+            String errorMessage = "Student with id " + studentId + " does not exist.";
+            log.error(errorMessage);
+            throw new IllegalArgumentException(errorMessage);
+        }
 
         Path filePath = Path.of(avatarsDir, studentId + "." + getExtension(Objects.requireNonNull(file.getOriginalFilename())));
         Files.createDirectories(filePath.getParent());
@@ -62,15 +73,21 @@ public class AvatarServiceImpl implements AvatarService {
     }
 
     public Avatar findAvatarByStudentId(Long studentId){
+        log.info("Was invoked method to find avatar by student id: {}", studentId);
+
         return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
     }
 
     public Collection<Avatar> getAvatarsByPages(Integer pageNumber, Integer pageSize){
+        log.info("Was invoked method to get avatars by pages: {}, {}", pageNumber, pageSize);
+
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
         return avatarRepository.findAll(pageRequest).getContent();
     }
 
     private byte[] generateImageData(Path filePath) throws IOException {
+        log.info("Was invoked method to generateImageData: {}", filePath);
+
         try(InputStream inputStream = Files.newInputStream(filePath);
             BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 1024);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
