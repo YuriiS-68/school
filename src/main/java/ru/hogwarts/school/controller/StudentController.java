@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Student;
@@ -63,6 +64,15 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getStudentsByAgeBetween(min, max));
     }
 
+    @GetMapping(value = "/symbol", params = {"symbol"})
+    public ResponseEntity<Collection<String>> getStudentsByFirstSymbol(@RequestParam(value = "symbol") Character symbol){
+        Collection<String> namesStudents = studentService.getStudentsByFirstSymbol(symbol);
+        if (namesStudents.size() == 0){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(namesStudents);
+    }
+
     @GetMapping("/quantity-students")
     public Integer getQuantityStudentsSchool(){
         return studentService.getQuantityStudents();
@@ -71,6 +81,11 @@ public class StudentController {
     @GetMapping("/avg")
     public Integer getAgeStudentsAverage(){
         return studentService.getAgeAverage();
+    }
+
+    @GetMapping("/avg-stream")
+    public Long getAgeAllStudentsAverage(){
+        return studentService.getAgeAllStudentsAverage();
     }
 
     @GetMapping("/last/{count}")

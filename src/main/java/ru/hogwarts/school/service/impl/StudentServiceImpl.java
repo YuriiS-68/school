@@ -2,6 +2,7 @@ package ru.hogwarts.school.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hogwarts.school.dao.StudentRepository;
@@ -66,16 +67,6 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findAll();
     }
 
-    private boolean checkValidName(Student student){
-        char[] chars = student.getName().toCharArray();
-        for (Character ch : chars){
-            if (!Character.isLetter(ch)){
-                return false;
-            }
-        }
-        return true;
-    }
-
     public Collection<Student> getStudentsByAge(Integer age) {
         log.info("Was invoked method get students by age: {}", age);
         if (age == null){
@@ -86,6 +77,23 @@ public class StudentServiceImpl implements StudentService {
         return getAllStudents().stream()
                 .filter(student -> student.getAge() == age)
                 .collect(Collectors.toList());
+    }
+
+    public Collection<String> getStudentsByFirstSymbol(Character symbol){
+        log.info("Was invoked method get students by first symbol: {}", symbol);
+        return studentRepository.findAll(Sort.by(Sort.Direction.ASC, "name")).stream()
+                .filter(student -> student.getName().startsWith(String.valueOf(symbol)))
+                .map(student -> student.getName().toUpperCase())
+                .collect(Collectors.toList());
+    }
+
+    public Long getAgeAllStudentsAverage(){
+        double ageAverage = studentRepository.findAll().stream()
+                .mapToDouble(Student::getAge).average().orElse(0);
+        if (ageAverage == 0){
+            log.warn("There are not students in DB.");
+        }
+        return Math.round(ageAverage);
     }
 
     public Collection<Student> getStudentsByAgeBetween(Integer min, Integer max){
@@ -106,5 +114,15 @@ public class StudentServiceImpl implements StudentService {
     public Collection<Student> getLastAddedStudent(int count){
         log.info("Was invoked method get last added students: {}", count);
         return studentRepository.getFiveLastStudents(count);
+    }
+
+    private boolean checkValidName(Student student){
+        char[] chars = student.getName().toCharArray();
+        for (Character ch : chars){
+            if (!Character.isLetter(ch)){
+                return false;
+            }
+        }
+        return true;
     }
 }
