@@ -53,6 +53,11 @@ public class FacultyController {
         return facultyService.getFacultiesByColor(color);
     }
 
+    @GetMapping("/get-longest-name")
+    public Optional<String> getLongestNameFaculty(){
+        return facultyService.getLongestNameFaculty();
+    }
+
     @GetMapping("/get")
     public Collection<Faculty> getAll(){
         return facultyService.getAllFaculties();
