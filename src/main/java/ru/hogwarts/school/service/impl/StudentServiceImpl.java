@@ -12,6 +12,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,6 +86,80 @@ public class StudentServiceImpl implements StudentService {
                 .filter(student -> student.getName().startsWith(String.valueOf(symbol)))
                 .map(student -> student.getName().toUpperCase())
                 .collect(Collectors.toList());
+    }
+
+    public void getNameStudentsThreads(){
+        List<String> nameStudents = getNameAllStudents();
+        System.out.println(printNameStudentsFromList(nameStudents));
+
+        for (int i = 0; i < nameStudents.size() && i < 3; i++) {
+            printName(nameStudents.get(i) + ", ");
+        }
+
+        new Thread(() ->{
+            System.out.println("\n" + Thread.currentThread().getName() + " first is created");
+            for (int i = 3; i < nameStudents.size() && i < 6; i++) {
+                printName(nameStudents.get(i) + ", ");
+            }
+        }).start();
+
+        new Thread(() ->{
+            System.out.println("\n" + Thread.currentThread().getName() + " second is created");
+            for (int i = 6; i < nameStudents.size(); i++) {
+                if (i == nameStudents.size() - 1){
+                    printName(nameStudents.get(i) + ".\n");
+                } else {
+                    printName(nameStudents.get(i) + ", ");
+                }
+            }
+        }).start();
+    }
+
+    public void getNameStudentsThreadsSync(){
+        printNameStudentsSync(50L);
+        printNameStudentsSync(51L);
+        printNameStudentsSync(52L);
+
+        new Thread(() -> {
+            System.out.println("\n" + Thread.currentThread().getName() + " first is created");
+            printNameStudentsSync(53L);
+            printNameStudentsSync(5L);
+            printNameStudentsSync(6L);
+        }).start();
+
+        new Thread(() -> {
+            System.out.println("\n" + Thread.currentThread().getName() + " second is created");
+            printNameStudentsSync(7L);
+            printNameStudentsSync(8L);
+            printNameStudentsSync(9L);
+        }).start();
+    }
+
+    private List<String> getNameAllStudents(){
+        assert studentRepository != null;
+        return studentRepository.findAll().stream()
+                .map(Student::getName)
+                .collect(Collectors.toList());
+    }
+
+    private StringBuilder printNameStudentsFromList(List<String> names){
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < names.size(); i++) {
+            if (i == names.size() - 1){
+                stringBuilder.append(names.get(i)).append(".").append("\n");
+            } else {
+                stringBuilder.append(names.get(i)).append(", ");
+            }
+        }
+        return stringBuilder;
+    }
+
+    private void printName(String name){
+        System.out.print(name);
+    }
+
+    private synchronized void printNameStudentsSync(Long id){
+        System.out.println(studentRepository.findById(id).get().getName() + "; ");
     }
 
     public Long getAgeAllStudentsAverage(){

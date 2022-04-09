@@ -59,6 +59,16 @@ public class StudentController {
         return studentService.getAllStudents();
     }
 
+    @GetMapping("/threads")
+    public void getNameStudentsThreads(){
+        studentService.getNameStudentsThreads();
+    }
+
+    @GetMapping("/sync-threads")
+    public void getNameStudentsThreadsSync(){
+        studentService.getNameStudentsThreadsSync();
+    }
+
     @GetMapping("/ages")
     public ResponseEntity<Collection<Student>> getStudentsByAgeBetween(@RequestParam Integer min, @RequestParam Integer max){
         return ResponseEntity.ok(studentService.getStudentsByAgeBetween(min, max));
