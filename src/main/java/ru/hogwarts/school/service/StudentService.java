@@ -29,4 +29,8 @@ public interface StudentService {
     Integer getAgeAverage();
 
     Collection<Student> getLastAddedStudent(int count);
+
+    void getNameStudentsThreads();
+
+    void getNameStudentsThreadsSync();
 }
